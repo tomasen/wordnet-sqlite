@@ -19,8 +19,8 @@ var tmpl = flag.String("tmpl", "./misc/wn-struct.sqlite", "path of sqlite databa
 var output = flag.String("output", "./wordnet.sqlite", "path to output sqlite db")
 
 var (
-	database            *sql.DB
-	sensestmt, wordstmt *sql.Stmt
+	database                     *sql.DB
+	sensestmt, exmstmt, wordstmt *sql.Stmt
 )
 
 func main() {
@@ -38,6 +38,11 @@ func main() {
 
 	// prepare sql statements
 	sensestmt, err = database.Prepare("INSERT INTO sense (gloss) VALUES (?)")
+	if err != nil {
+		log.Fatalln("failed to prepare insert into sense", err)
+	}
+	// prepare sql statements
+	exmstmt, err = database.Prepare("INSERT INTO example (senseid, example) VALUES (?, ?)")
 	if err != nil {
 		log.Fatalln("failed to prepare insert into sense", err)
 	}
@@ -76,9 +81,21 @@ func process(pos string) {
 			log.Println("file:", pos, "line:", lineid)
 			log.Fatalln("unrecogenized gloss")
 		}
-		gloss := arr[1]
+		gloss := []string{}
+		examples := []string{}
+		for _, v := range strings.Split(arr[1], ";") {
+			v = strings.TrimSpace(v)
+			if strings.HasPrefix(v, "\"") {
+				examples = append(examples, strings.Trim(v, "\""))
+			} else {
+				gloss = append(gloss, v)
+			}
+		}
+		if len(gloss) > 1 {
+			log.Println("[multi-glosses]", len(gloss), "file:", pos, "line:", lineid)
+		}
 
-		res, err := sensestmt.Exec(gloss)
+		res, err := sensestmt.Exec(strings.Join(gloss, "; "))
 		if err != nil {
 			log.Println("file:", pos, "line:", lineid)
 			log.Fatalln("fail to insert into sense gloss", err)
@@ -97,9 +114,15 @@ func process(pos string) {
 			log.Fatalln("error:", err)
 		}
 		for i := 0; i < int(wCnt); i++ {
-			word := arr[4+i*2]
+			word := strings.Replace(arr[4+i*2], "_", " ", -1)
 			lexid := arr[5+i*2]
 			res, err = wordstmt.Exec(word, lexid, ssType, senseid)
+			if err != nil {
+				log.Fatalln(err)
+			}
+		}
+		for _, v := range examples {
+			res, err = exmstmt.Exec(senseid, v)
 			if err != nil {
 				log.Fatalln(err)
 			}

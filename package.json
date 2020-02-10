@@ -1,0 +1,23 @@
+{
+  "name": "wordnet-sqlite",
+  "version": "1.0.0",
+  "description": "convert wordnet 3.x database files to sqlite",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tomasen/wordnet-sqlite.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tomasen/wordnet-sqlite/issues"
+  },
+  "homepage": "https://github.com/tomasen/wordnet-sqlite#readme",
+  "dependencies": {
+    "compromise": "^13.0.0",
+    "sqlite3": "^4.1.1"
+  }
+}

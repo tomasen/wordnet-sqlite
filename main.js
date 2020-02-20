@@ -26,7 +26,7 @@ db.run('CREATE INDEX "idx_alias" ON "alias" ( "alias" )');
 
 
 {
-    let conj = nlp("fall").verbs().conjugate()[0];
+    let conj = nlp("fall").tag('Verb').verbs().conjugate()[0];
     Object.keys(conj).forEach((key) => {
         var val = conj[key];
         console.log(key + '->' + val);
@@ -40,7 +40,7 @@ db.run('CREATE INDEX "idx_alias" ON "alias" ( "alias" )');
 
 
 { // tenses
-    let sql = `SELECT DISTINCT word FROM word WHERE ss_type = "v"`;
+    let sql = `SELECT DISTINCT word, phrase FROM word WHERE ss_type = "v"`;
 
     db.all(sql, [], (err, rows) => {
         if (err) {
@@ -48,7 +48,11 @@ db.run('CREATE INDEX "idx_alias" ON "alias" ( "alias" )');
         }
         rows.forEach((row) => {
             let word = row.word.replace('_', ' ').toLowerCase();
-            let conjs = nlp(word).verbs().conjugate();
+            var conjs = nlp(word)
+            if (row.phrase < 1) {
+                conjs = conjs.tag('Verb')
+            }
+            conjs = conjs.verbs().conjugate();
             conjs.forEach((conj) => {
                 Object.keys(conj).forEach((key) => {
                     var val = conj[key];
@@ -79,8 +83,11 @@ db.run('CREATE INDEX "idx_alias" ON "alias" ( "alias" )');
         }
         rows.forEach((row) => {
             let word = row.word.replace('_', ' ').toLowerCase();
-            let doc = nlp(word);
-            doc.nouns().toPlural();
+            var doc = nlp(word);
+            if (row.phrase < 1) {
+                doc = doc.tag('Noun');
+            }
+            doc = doc.nouns().toPlural();
             let plu = doc.text();
             if (plu != word) {
                 console.log(row.word + ' -> ' + plu);

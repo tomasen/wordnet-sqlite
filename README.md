@@ -13,3 +13,8 @@ run `bash gen.sh` to generate
 # Done
 
 - seperate words with phrases(group of words)
+
+# answeraction
+
+`go run csv.go > answeraction.csv` generate action csv
+`open answeraction.csv` to exiam

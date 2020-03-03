@@ -40,7 +40,7 @@ db.run('CREATE INDEX "idx_alias" ON "alias" ( "alias" )');
 
 
 { // tenses
-    let sql = `SELECT DISTINCT word, phrase FROM word WHERE ss_type = "v"`;
+    let sql = `SELECT DISTINCT word, phrase FROM word, sense WHERE word.id = sense.word_id AND sense.ss_type = "v"`;
 
     db.all(sql, [], (err, rows) => {
         if (err) {
@@ -75,7 +75,7 @@ db.run('CREATE INDEX "idx_alias" ON "alias" ( "alias" )');
 }
 
 { // plural
-    let sql = `SELECT DISTINCT word FROM word WHERE ss_type = "n"`;
+    let sql = `SELECT DISTINCT word FROM word, sense WHERE word.id = sense.word_id AND sense.ss_type = "n"`;
 
     db.all(sql, [], (err, rows) => {
         if (err) {

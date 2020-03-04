@@ -111,11 +111,11 @@ func prepareStmts() {
 func procAnki() {
 
 	procAnkiData("COCAEnglish10000", "COCA", "COCA 10000", 0, 1, -2)
-	// procAnkiData("4000_Essential_English_Words_all_books_en-en", "BASIC", "ESSENTIAL 400", 0, 7, 2)
-	// procAnkiData("TOEFL", "TOEFL", "TOEFL", 0, -1, -2)
-	// procAnkiData("SAT3500", "SAT1", "SAT 3500", 0, -1, -1)
-	// procAnkiData("SAT6000", "SAT2", "SAT 6000", 1, -1, -1)
-	// procAnkiData("GRE", "GRE", "GRE", 0, 1, 7)
+	procAnkiData("4000_Essential_English_Words_all_books_en-en", "BASIC", "ESSENTIAL 400", 0, 7, 2)
+	procAnkiData("TOEFL", "TOEFL", "TOEFL", 0, -1, -2)
+	procAnkiData("SAT3500", "SAT1", "SAT 3500", 0, -1, -1)
+	procAnkiData("SAT6000", "SAT2", "SAT 6000", 1, -1, -1)
+	procAnkiData("GRE", "GRE", "GRE", 0, 1, 7)
 }
 
 func procAnkiData(fname, tag, name string, wordidx, proncid, soundid int) {

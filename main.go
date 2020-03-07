@@ -86,7 +86,7 @@ func prepareStmts() {
 	if err != nil {
 		log.Fatalln("failed to prepare insert into word", err)
 	}
-	sense1stmt, err = database.Prepare("INSERT INTO sense (word_id, lex_id, ss_type, glossid) VALUES (?, ?, ?, ?)")
+	sense1stmt, err = database.Prepare("INSERT INTO sense (wordid, lexid, sstype, glossid) VALUES (?, ?, ?, ?)")
 	if err != nil {
 		log.Fatalln("failed to prepare insert into sense", err)
 	}
@@ -94,7 +94,7 @@ func prepareStmts() {
 	if err != nil {
 		log.Fatalln("failed to prepare insert into word", err)
 	}
-	updatesoundstmt, err = database.Prepare("UPDATE word SET sound = ? WHERE word = ?")
+	updatesoundstmt, err = database.Prepare("REPLACE INTO sound (sound, wordid) VALUES (?, ?)")
 	if err != nil {
 		log.Fatalln("failed to prepare insert into word", err)
 	}
@@ -181,7 +181,7 @@ func procAnkiData(fname, tag, name string, wordidx, proncid, soundid int) {
 		if len(soundfile) > 0 {
 			sound := getAnkiSoundFile(p, soundfile)
 			if len(sound) > 0 {
-				res, err := updatesoundstmt.Exec(sound, word)
+				res, err := updatesoundstmt.Exec(sound, wordid)
 				if err != nil {
 					log.Fatalln("upable to update sound to word")
 				}
